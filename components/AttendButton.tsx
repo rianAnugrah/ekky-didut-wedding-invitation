@@ -1,23 +1,4 @@
-// export default function AttendButton() {
-//   return (
-//     <>
-//       <div className="w-[20rem] flex flex-col items-center gap-2 justify-center">
-//         <p className="text-center">
-//           Please confirm your choice of attendance. Without RSVP, you will not
-//           have access to enter the wedding location.
-//         </p>
-//         <p>
-//           Silahkan pilih opsi kehadiran Anda. Tanpa konfirmasi, Anda tidak bisa
-//           mendapat akses untuk masuk ke lokasi acara.
-//         </p>
 
-//         <form>
-
-//         </form>
-//       </div>
-//     </>
-//   );
-// }
 
 "use client";
 import { useState } from "react";
@@ -69,7 +50,7 @@ export default function RsvpForm() {
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center justify-between w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-black"
+                className="flex items-center justify-between w-full px-3 py-2 border border-white rounded-md bg-transparent  text-xs text-white "
               >
                 <span>{guests}</span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
@@ -110,7 +91,7 @@ export default function RsvpForm() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-black"
+                className="w-full px-3 py-2 border border-white rounded-md bg-transparent  text-xs text-white "
                 required
               />
             </div>
@@ -126,7 +107,7 @@ export default function RsvpForm() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="08522195XXXX"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-black"
+                className="w-full px-3 py-2 border border-white rounded-md bg-transparent  text-xs text-white "
                 required
               />
             </div>
