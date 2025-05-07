@@ -1,20 +1,14 @@
 
+// app/api/tasks/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getRecordById, updateRecord, deleteRecord } from '@/lib/airtable';
 
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
   try {
-    const task = await getRecordById(id);
+    const task = await getRecordById(params.id);
     return NextResponse.json(task);
   } catch (error) {
     return NextResponse.json(
@@ -26,12 +20,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
   try {
     const body = await request.json();
-    const updatedTask = await updateRecord(id, body);
+    const updatedTask = await updateRecord(params.id, body);
     return NextResponse.json(updatedTask);
   } catch (error) {
     return NextResponse.json(
@@ -43,11 +36,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
   try {
-    const deletedTask = await deleteRecord(id);
+    const deletedTask = await deleteRecord(params.id);
     return NextResponse.json({ message: 'Task deleted successfully', task: deletedTask });
   } catch (error) {
     return NextResponse.json(
