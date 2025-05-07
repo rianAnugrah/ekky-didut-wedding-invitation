@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { headingFont, bodyFont } from './fonts'
 
 export const metadata: Metadata = {
-  title: 'Ekky x Didut | Wedding invitation',
+  title: 'Ekky 💍 Didut Wedding Invitation',
   description: 'We are excited to have you join our celebration',
 };
 

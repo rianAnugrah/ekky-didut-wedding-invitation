@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Heart, Music, Coffee, Utensils, Church } from 'lucide-react';
+import { MapPin, Clock, Music, Coffee, Utensils, Church } from 'lucide-react';
+import Image from 'next/image';
 
 export default function TimeLine() {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -87,7 +88,9 @@ export default function TimeLine() {
             transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
             className="inline-block mb-4"
           >
-            <Heart className="h-16 w-16 text-[#dcbfc9] mx-auto" fill="#f43f5e" strokeWidth={1} />
+            {/* <Heart className="h-16 w-16 text-[#dcbfc9] mx-auto" fill="#f43f5e" strokeWidth={1} /> */}
+
+            <Image src="/bow_logogram.svg" alt="bow" width={100} height={100} />
           </motion.div>
           <h1 className="text-3xl font-serif font-bold text-white mb-2">Our Special Day</h1>
           <p className="text-[#dcbfc9]">We&apos;re excited to have you join our celebration!</p>

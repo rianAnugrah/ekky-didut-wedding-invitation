@@ -1,14 +1,28 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Loader2, Trash2, PenSquare, Plus, X } from "lucide-react"
-import { fetchGuests, createGuest, updateGuest, deleteGuest, type Guest } from "./actions"
-import WhatsAppButton from "./wa-button"
+import { useState, useEffect } from "react";
+import { Loader2, Trash2, PenSquare, Plus, X } from "lucide-react";
+import {
+  fetchGuests,
+  createGuest,
+  updateGuest,
+  deleteGuest,
+  type Guest,
+} from "./actions";
+import WhatsAppButton from "./wa-button";
 
 // Toast notification component
-function Toast({ message, type, onClose }: { message: string; type: "success" | "error"; onClose: () => void }) {
+function Toast({
+  message,
+  type,
+  onClose,
+}: {
+  message: string;
+  type: "success" | "error";
+  onClose: () => void;
+}) {
   return (
     <div
       className={`fixed bottom-4 right-4 px-4 py-3 rounded-md shadow-lg flex items-center justify-between ${
@@ -20,53 +34,93 @@ function Toast({ message, type, onClose }: { message: string; type: "success" | 
         <X className="h-4 w-4" />
       </button>
     </div>
-  )
+  );
 }
 
 // Client component
 export default function GuestsPage() {
-  const [guests, setGuests] = useState<Guest[]>([])
-  const [loading, setLoading] = useState(true)
-  const [nama, setNama] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [jumlahOrang, setJumlahOrang] = useState(1)
-  const [willAttend, setWillAttend] = useState(0)
-  const [gereja, setGereja] = useState(false)
-  const [teaPai, setTeaPai] = useState(false)
-  const [soiree, setSoiree] = useState(false)
-  const [afterParty, setAfterParty] = useState(false)
-  const [editingGuest, setEditingGuest] = useState<Guest | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [nama, setNama] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [jumlahOrang, setJumlahOrang] = useState(1);
+  const [willAttend, setWillAttend] = useState(0);
+  const [gereja, setGereja] = useState(false);
+  const [teaPai, setTeaPai] = useState(false);
+  const [soiree, setSoiree] = useState(false);
+  const [afterParty, setAfterParty] = useState(false);
+  const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterAttendance, setFilterAttendance] = useState<null | number>(null); // 1, 0, -1, or null
+  const [sortOption, setSortOption] = useState<
+    "name-asc" | "name-desc" | "jumlah-asc" | "jumlah-desc"
+  >("name-asc");
+
+  const filteredGuests = guests
+    .filter((guest) => {
+      const nameMatches = guest.fields.NAMA.toLowerCase().includes(
+        searchTerm.toLowerCase()
+      );
+      const attendanceMatches =
+        filterAttendance === null ||
+        guest.fields["WILL ATTEND"] === filterAttendance;
+      return nameMatches && attendanceMatches;
+    })
+    .sort((a, b) => {
+      switch (sortOption) {
+        case "name-asc":
+          return a.fields.NAMA.localeCompare(b.fields.NAMA);
+        case "name-desc":
+          return b.fields.NAMA.localeCompare(a.fields.NAMA);
+        case "jumlah-asc":
+          return (
+            (a.fields["JUMLAH ORANG"] || 0) - (b.fields["JUMLAH ORANG"] || 0)
+          );
+        case "jumlah-desc":
+          return (
+            (b.fields["JUMLAH ORANG"] || 0) - (a.fields["JUMLAH ORANG"] || 0)
+          );
+        default:
+          return 0;
+      }
+    });
 
   // Show toast notification
   const showToast = (message: string, type: "success" | "error") => {
-    setToast({ message, type })
+    setToast({ message, type });
     setTimeout(() => {
-      setToast(null)
-    }, 3000)
-  }
+      setToast(null);
+    }, 3000);
+  };
 
   // Load guests on component mount
   useEffect(() => {
     const loadGuests = async () => {
       try {
-        const guestsData = await fetchGuests()
-        setGuests(guestsData)
+        const guestsData = await fetchGuests();
+        setGuests(guestsData);
       } catch (error) {
-        showToast("Failed to load guests. Please try again.", "error")
-      } finally {
-        setLoading(false)
-      }
-    }
+        console.log(error)
 
-    loadGuests()
-  }, [])
+        showToast("Failed to load guests. Please try again.", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGuests();
+  }, []);
 
   // Handle form submission for creating or updating a guest
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       if (editingGuest) {
@@ -80,13 +134,17 @@ export default function GuestsPage() {
           "TEA PAI": teaPai,
           SOIREE: soiree,
           "AFTER PARTY": afterParty,
-        })
+        });
 
-        setGuests(guests.map((guest) => (guest.id === updatedGuest.id ? updatedGuest : guest)))
-        showToast("Guest updated successfully!", "success")
+        setGuests(
+          guests.map((guest) =>
+            guest.id === updatedGuest.id ? updatedGuest : guest
+          )
+        );
+        showToast("Guest updated successfully!", "success");
 
         // Reset form
-        setEditingGuest(null)
+        setEditingGuest(null);
       } else {
         // Create new guest
         const newGuest = await createGuest(
@@ -97,95 +155,100 @@ export default function GuestsPage() {
           gereja,
           teaPai,
           soiree,
-          afterParty,
-        )
-        setGuests([...guests, newGuest])
-        showToast("Guest created successfully!", "success")
+          afterParty
+        );
+        setGuests([...guests, newGuest]);
+        showToast("Guest created successfully!", "success");
       }
 
       // Clear form
-      resetForm()
+      resetForm();
     } catch (error) {
+        console.log(error)
+        
       showToast(
-        editingGuest ? "Failed to update guest. Please try again." : "Failed to create guest. Please try again.",
-        "error",
-      )
+        editingGuest
+          ? "Failed to update guest. Please try again."
+          : "Failed to create guest. Please try again.",
+        "error"
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Reset form fields
   const resetForm = () => {
-    setNama("")
-    setPhoneNumber("")
-    setJumlahOrang(1)
-    setWillAttend(0)
-    setGereja(false)
-    setTeaPai(false)
-    setSoiree(false)
-    setAfterParty(false)
-  }
+    setNama("");
+    setPhoneNumber("");
+    setJumlahOrang(1);
+    setWillAttend(0);
+    setGereja(false);
+    setTeaPai(false);
+    setSoiree(false);
+    setAfterParty(false);
+  };
 
   // Handle guest deletion
   const handleDelete = async (id: string) => {
     try {
-      await deleteGuest(id)
-      setGuests(guests.filter((guest) => guest.id !== id))
-      showToast("Guest deleted successfully!", "success")
+      await deleteGuest(id);
+      setGuests(guests.filter((guest) => guest.id !== id));
+      showToast("Guest deleted successfully!", "success");
     } catch (error) {
-      showToast("Failed to delete guest. Please try again.", "error")
+        console.log(error)
+      showToast("Failed to delete guest. Please try again.", "error");
     }
-  }
+  };
 
   // Set up guest for editing
   const handleEdit = (guest: Guest) => {
-    setEditingGuest(guest)
-    setNama(guest.fields.NAMA)
-    setPhoneNumber(guest.fields["PHONE NUMBER"] || "")
-    setJumlahOrang(guest.fields["JUMLAH ORANG"] || 1)
-    setWillAttend(guest.fields["WILL ATTEND"] || 0)
-    setGereja(guest.fields.GEREJA || false)
-    setTeaPai(guest.fields["TEA PAI"] || false)
-    setSoiree(guest.fields.SOIREE || false)
-    setAfterParty(guest.fields["AFTER PARTY"] || false)
-  }
+    setEditingGuest(guest);
+    setNama(guest.fields.NAMA);
+    setPhoneNumber(guest.fields["PHONE NUMBER"] || "");
+    setJumlahOrang(guest.fields["JUMLAH ORANG"] || 1);
+    setWillAttend(guest.fields["WILL ATTEND"] || 0);
+    setGereja(guest.fields.GEREJA || false);
+    setTeaPai(guest.fields["TEA PAI"] || false);
+    setSoiree(guest.fields.SOIREE || false);
+    setAfterParty(guest.fields["AFTER PARTY"] || false);
+  };
 
   // Cancel editing
   const handleCancelEdit = () => {
-    setEditingGuest(null)
-    resetForm()
-  }
+    setEditingGuest(null);
+    resetForm();
+  };
 
   // Get attendance status text
   const getAttendanceStatus = (willAttend: number | undefined) => {
-    if (willAttend === undefined) return "Unknown"
+    if (willAttend === undefined) return "Unknown";
     switch (willAttend) {
       case 1:
-        return "Will Attend"
+        return "Will Attend";
       case 0:
-        return "Pending"
+        return "Pending";
       case -1:
-        return "Will Not Attend"
+        return "Will Not Attend";
       default:
-        return "Unknown"
+        return "Unknown";
     }
-  }
+  };
 
   // Get attendance status color
   const getAttendanceStatusColor = (willAttend: number | undefined) => {
-    if (willAttend === undefined) return "bg-gray-100 text-gray-800"
+    if (willAttend === undefined) return "bg-gray-100 text-gray-800";
     switch (willAttend) {
       case 1:
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case 0:
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case -1:
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl text-black">
@@ -194,14 +257,21 @@ export default function GuestsPage() {
       {/* Guest Form */}
       <div className="bg-white rounded-lg shadow-md mb-8 overflow-hidden">
         <div className="px-6 py-4 bg-gray-50 border-b">
-          <h2 className="text-xl font-semibold">{editingGuest ? "Edit Guest" : "Add New Guest"}</h2>
+          <h2 className="text-xl font-semibold">
+            {editingGuest ? "Edit Guest" : "Add New Guest"}
+          </h2>
           <p className="text-gray-500 text-sm mt-1">
-            {editingGuest ? "Update the details of your guest below" : "Fill in the details to add a new guest"}
+            {editingGuest
+              ? "Update the details of your guest below"
+              : "Fill in the details to add a new guest"}
           </p>
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
-            <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="nama"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Nama
             </label>
             <input
@@ -216,7 +286,10 @@ export default function GuestsPage() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="phoneNumber"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Phone Number
             </label>
             <input
@@ -231,7 +304,10 @@ export default function GuestsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label htmlFor="jumlahOrang" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="jumlahOrang"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Jumlah Orang
               </label>
               <input
@@ -239,7 +315,9 @@ export default function GuestsPage() {
                 type="number"
                 min="1"
                 value={jumlahOrang}
-                onChange={(e) => setJumlahOrang(Number.parseInt(e.target.value))}
+                onChange={(e) =>
+                  setJumlahOrang(Number.parseInt(e.target.value))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -272,7 +350,10 @@ export default function GuestsPage() {
                 onChange={(e) => setGereja(e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="gereja" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="gereja"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Gereja
               </label>
             </div>
@@ -285,7 +366,10 @@ export default function GuestsPage() {
                 onChange={(e) => setTeaPai(e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="teaPai" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="teaPai"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Tea Pai
               </label>
             </div>
@@ -298,7 +382,10 @@ export default function GuestsPage() {
                 onChange={(e) => setSoiree(e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="soiree" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="soiree"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Soiree
               </label>
             </div>
@@ -311,7 +398,10 @@ export default function GuestsPage() {
                 onChange={(e) => setAfterParty(e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="afterParty" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="afterParty"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 After Party
               </label>
             </div>
@@ -365,6 +455,60 @@ export default function GuestsPage() {
         </form>
       </div>
 
+      <div className="mb-6 flex flex-wrap gap-4 items-end">
+        {/* Search */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Search
+          </label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name"
+            className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Attendance Filter */}
+        <div>
+          <label className="hidden text-sm font-medium text-gray-700 mb-1">
+            Attendance
+          </label>
+          <select
+            value={filterAttendance ?? ""}
+            onChange={(e) =>
+              setFilterAttendance(
+                e.target.value === "" ? null : Number(e.target.value)
+              )
+            }
+            className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All</option>
+            <option value="1">Will Attend</option>
+            <option value="0">Pending</option>
+            <option value="-1">Will Not Attend</option>
+          </select>
+        </div>
+
+        {/* Sort */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Sort By
+          </label>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value as  "name-asc" | "name-desc" | "jumlah-asc" | "jumlah-desc")}
+            className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="jumlah-asc">Jumlah Orang (Asc)</option>
+            <option value="jumlah-desc">Jumlah Orang (Desc)</option>
+          </select>
+        </div>
+      </div>
+
       {/* Guests List */}
       <div>
         <h2 className="text-2xl font-semibold mb-4">Your Guests</h2>
@@ -373,30 +517,43 @@ export default function GuestsPage() {
           <div className="flex justify-center items-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
           </div>
-        ) : guests.length === 0 ? (
+        ) : filteredGuests.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-500">No guests found. Add your first guest above!</p>
+            <p className="text-gray-500">
+              No guests found. Add your first guest above!
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {guests.map((guest) => (
-              <div key={guest.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            {filteredGuests.map((guest) => (
+              <div
+                key={guest.id}
+                className="bg-white rounded-lg shadow-md overflow-hidden"
+              >
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-gray-900">{guest.fields.NAMA}</h3>
+                        <h3 className="font-medium text-gray-900">
+                          {guest.fields.NAMA}
+                        </h3>
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAttendanceStatusColor(guest.fields["WILL ATTEND"])}`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAttendanceStatusColor(
+                            guest.fields["WILL ATTEND"]
+                          )}`}
                         >
                           {getAttendanceStatus(guest.fields["WILL ATTEND"])}
                         </span>
                       </div>
 
                       {guest.fields["PHONE NUMBER"] && (
-                        <p className="mt-1 text-gray-600 text-sm">{guest.fields["PHONE NUMBER"]}</p>
+                        <p className="mt-1 text-gray-600 text-sm">
+                          {guest.fields["PHONE NUMBER"]}
+                        </p>
                       )}
-                      <p className="mt-1 text-gray-600 text-sm">Jumlah Orang: {guest.fields["JUMLAH ORANG"] || 1}</p>
+                      <p className="mt-1 text-gray-600 text-sm">
+                        Jumlah Orang: {guest.fields["JUMLAH ORANG"] || 1}
+                      </p>
 
                       <div className="mt-2 flex flex-wrap gap-2">
                         {guest.fields.GEREJA && (
@@ -422,11 +579,16 @@ export default function GuestsPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                    <WhatsAppButton
-                      link={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
-                      phoneNumber={guest.fields["PHONE NUMBER"]}
-                    />
-                    <a href={`http://localhost:3000/${guest.id}`} target="_blank" >Link </a>
+                      <WhatsAppButton
+                        link={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
+                        phoneNumber={guest.fields["PHONE NUMBER"]}
+                      />
+                      <a
+                        href={`http://localhost:3000/${guest.id}`}
+                        target="_blank"
+                      >
+                        Link{" "}
+                      </a>
                       <button
                         onClick={() => handleEdit(guest)}
                         className="p-1 rounded-md hover:bg-gray-100 text-gray-600"
@@ -449,7 +611,13 @@ export default function GuestsPage() {
       </div>
 
       {/* Toast Notification */}
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
-  )
+  );
 }

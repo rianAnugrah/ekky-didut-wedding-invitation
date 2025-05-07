@@ -24,7 +24,7 @@ export default function RsvpForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#422922] gap-8 p-4 text-white  px-6 w-[20rem]">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#422922] gap-8 p-4 text-white  px-6 w-[20rem] pb-20">
       <p className="text-center text-xs font-bold">
         Please confirm your choice of attendance. Without RSVP, you will not
         have access to enter the wedding location.
@@ -132,13 +132,13 @@ export default function RsvpForm() {
             type="submit"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#1A1A1A] text-white px-4 py-3 rounded-md font-medium"
+            className="w-full bg-amber-900 text-white px-4 py-3 rounded-md font-medium"
           >
             {isSubmitted ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center justify-center"
+                className="flex items-center justify-center "
               >
                 <Check className="h-5 w-5 mr-2" />
                 <span>RSVP Submitted</span>
