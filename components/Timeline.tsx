@@ -75,7 +75,7 @@ export default function TimeLine() {
   return (
     <div className="min-h-screen bg-[#422922] py-12 px-12">
       <motion.div 
-        className="max-w-md mx-auto"
+        className="max-w-[20rem] mx-auto"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -90,7 +90,7 @@ export default function TimeLine() {
             <Heart className="h-16 w-16 text-[#dcbfc9] mx-auto" fill="#f43f5e" strokeWidth={1} />
           </motion.div>
           <h1 className="text-3xl font-serif font-bold text-white mb-2">Our Special Day</h1>
-          <p className="text-[#dcbfc9]">We're excited to have you join our celebration!</p>
+          <p className="text-[#dcbfc9]">We&apos;re excited to have you join our celebration!</p>
         </div>
 
         <motion.div

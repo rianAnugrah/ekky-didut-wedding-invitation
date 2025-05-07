@@ -43,7 +43,7 @@ export default function RsvpForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#422922] gap-8 p-4 text-white  px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#422922] gap-8 p-4 text-white  px-6 w-[20rem]">
       <p className="text-center text-xs font-bold">
         Please confirm your choice of attendance. Without RSVP, you will not
         have access to enter the wedding location.
