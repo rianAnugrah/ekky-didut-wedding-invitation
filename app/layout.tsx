@@ -1,14 +1,13 @@
 // app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
+import { headingFont, bodyFont } from './fonts'
 
 export const metadata: Metadata = {
   title: 'Task Manager - Next.js with Airtable',
   description: 'CRUD application with Next.js App Router and Airtable',
 };
+
 
 export default function RootLayout({
   children,
@@ -16,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="container mx-auto p-4">
+    <html lang="en"  className={`${headingFont.variable} ${bodyFont.variable}`}>
+      <body className={bodyFont.className}>
+        <div className="">
           {children}
         </div>
       </body>
