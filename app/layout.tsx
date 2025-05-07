@@ -4,8 +4,8 @@ import type { Metadata } from 'next';
 import { headingFont, bodyFont } from './fonts'
 
 export const metadata: Metadata = {
-  title: 'Task Manager - Next.js with Airtable',
-  description: 'CRUD application with Next.js App Router and Airtable',
+  title: 'Ekky x Didut | Wedding invitation',
+  description: 'We are excited to have you join our celebration',
 };
 
 
