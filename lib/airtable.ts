@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // lib/airtable.ts
 import Airtable from "airtable";
 

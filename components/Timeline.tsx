@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Heart, Music, Coffee, Utensils, GlassWater, Church } from 'lucide-react';
+import { MapPin, Clock, Heart, Music, Coffee, Utensils, Church } from 'lucide-react';
 
 export default function TimeLine() {
   const [selectedEvent, setSelectedEvent] = useState(null);
