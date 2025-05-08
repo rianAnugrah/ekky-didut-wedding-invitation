@@ -18,6 +18,7 @@ export interface Guest {
   }
 }
 
+
 // Fetch all guests
 export async function fetchGuests() {
   const apiKey = process.env.AIRTABLE_API_KEY

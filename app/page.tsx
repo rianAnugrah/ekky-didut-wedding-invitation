@@ -1,41 +1,41 @@
 "use client";
 import Image from "next/image";
-import { headingFont } from "./fonts";
-import { useRef } from "react";
-import { ArrowUp } from "lucide-react";
-import AttendButton from "@/components/AttendButton";
-import TimeLine from "@/components/Timeline";
+// import { useRef } from "react";
+// import { ArrowUp } from "lucide-react";
+// import AttendButton from "@/components/AttendButton";
+// import TimeLine from "@/components/Timeline";
+import Hero from "@/components/Hero";
 
 export default function IndexPage() {
   // Explicitly type the ref as HTMLDivElement
-  const page2Ref = useRef<HTMLDivElement>(null);
+  //const page2Ref = useRef<HTMLDivElement>(null);
 
-  const scrollToPage2 = () => {
-    // Try using the ref first
-    if (page2Ref.current) {
-      // Get the element's position relative to the viewport
-      const rect = page2Ref.current.getBoundingClientRect();
-      // Calculate the absolute position by adding current scroll position
-      const absoluteTop = rect.top + window.scrollY;
+  // const scrollToPage2 = () => {
+  //   // Try using the ref first
+  //   if (page2Ref.current) {
+  //     // Get the element's position relative to the viewport
+  //     const rect = page2Ref.current.getBoundingClientRect();
+  //     // Calculate the absolute position by adding current scroll position
+  //     const absoluteTop = rect.top + window.scrollY;
 
-      // Scroll to the element's position
-      window.scrollTo({
-        top: absoluteTop,
-        behavior: "smooth",
-      });
-      return;
-    }
+  //     // Scroll to the element's position
+  //     window.scrollTo({
+  //       top: absoluteTop,
+  //       behavior: "smooth",
+  //     });
+  //     return;
+  //   }
 
-    // Fallback: try using getElementById
-    const page2Element = document.getElementById("page-2");
-    if (page2Element) {
-      const yOffset = page2Element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: yOffset,
-        behavior: "smooth",
-      });
-    }
-  };
+  //   // Fallback: try using getElementById
+  //   const page2Element = document.getElementById("page-2");
+  //   if (page2Element) {
+  //     const yOffset = page2Element.getBoundingClientRect().top + window.scrollY;
+  //     window.scrollTo({
+  //       top: yOffset,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // };
 
   return (
     <>
@@ -48,39 +48,25 @@ export default function IndexPage() {
           className="absolute object-contain w-full h-[100svh] z-0"
         />
 
-        <div className="w-[20rem] flex flex-col items-center gap-1 justify-center ">
-          <div className="flex h-8">&nbsp;</div>
-
-          <p className="text-center text-xs max-w-[15rem]">
-            With love in our hearts, we&apos;d be delighted to have you join us
-            for the wedding celebration of
-          </p>
-          <div className="flex h-8">&nbsp;</div>
-
-          <h1 className={`${headingFont.className} text-4xl`}>Ekky & Didut</h1>
-          <div className="flex h-4">&nbsp;</div>
-          <p className="text-xs">Saturday</p>
-          <p className="text-xl font-bold">June 7, 2025</p>
-          <p className="text-xs">Jakarta</p>
-        </div>
-
-        <button
+       
+        <Hero />
+        {/* <button
           className="absolute bottom-22 flex flex-col items-center   text-white p-4 rounded hover:bg-black/10 hover:-translate-y-1 duration-200 ease-in transition-all z-10"
           onClick={scrollToPage2}
         >
           <ArrowUp size={16} />
           <span className="text-xs mt-1">Slide up</span>
-        </button>
+        </button> */}
       </div>
 
-      <div
+      {/* <div
         ref={page2Ref}
         className="w-full flex flex-col items-center justify-center relative"
         id="page-2"
       >
         <TimeLine />
         <AttendButton />
-      </div>
+      </div> */}
     </>
   );
 }

@@ -584,7 +584,7 @@ export default function GuestsPage() {
                         phoneNumber={guest.fields["PHONE NUMBER"]}
                       />
                       <a
-                        href={`http://localhost:3000/${guest.id}`}
+                        href={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
                         target="_blank"
                       >
                         Link{" "}
