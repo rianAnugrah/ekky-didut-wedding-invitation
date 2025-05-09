@@ -56,7 +56,7 @@ Ekky & Didut
       href={waUrl}
       target="_blank"
       rel="noopener noreferrer"
-     className='flex bg-green-300 text-white p-2 gap-2 text-xs rounded items-center'
+     className='flex bg-green-200 text-green-600 px-4 gap-2 rounded items-center'
     >
       <MessageCircle /> Send
     </a>

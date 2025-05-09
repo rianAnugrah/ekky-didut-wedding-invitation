@@ -18,8 +18,11 @@ export default async function GuestPage({
 
     return (
       <Container>
+      
+
         <TimeLine guest={guest} />
         <AttendForm guest={guest} />
+       
       </Container>
     );
   } catch (error) {

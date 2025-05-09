@@ -41,7 +41,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
       <div className="w-full flex h-[100svh] items-center justify-center relative flex-col gap-6 text-[#dcbfc9]">
         <Image
           alt="bg"
-          src="/bg_e-invite.png"
+          src="/frame_page_1.svg"
           width={1080}
           height={1920}
           className="absolute object-contain w-full h-[100svh] z-0"
@@ -49,7 +49,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
 
         <Hero />
         <button
-          className="absolute bottom-22 flex flex-col items-center   text-white p-4 rounded hover:bg-black/10 hover:-translate-y-1 duration-200 ease-in transition-all z-10"
+          className="absolute bottom-28 flex flex-col items-center   text-white p-4 rounded hover:bg-black/10 hover:-translate-y-1 duration-200 ease-in transition-all z-10"
           onClick={scrollToPage2}
         >
           <ArrowUp size={16} />
@@ -62,6 +62,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
         className="w-full flex flex-col items-center justify-center relative "
         id="page-2"
       >
+
         {children}
       </div>
     </>
