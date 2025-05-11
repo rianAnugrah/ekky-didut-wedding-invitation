@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { MapPin, Clock, Music, Coffee, Utensils, Church } from "lucide-react";
 import Image from "next/image";
 import { Guest } from "@/app/guests/actions";
+import { headingFont } from "@/app/fonts";
 
 export default function TimeLine({ guest }: { guest: Guest }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -19,7 +20,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
       mapUrl: "https://maps.app.goo.gl/MQr8Jcnh7M9MmDE58",
       icon: <Church className="h-6 w-6" />,
       color: "bg-amber-900 text-white",
-      borderColor: "border-amber-600",
+      borderColor: "border-[#dbbeca]",
       fieldKey: "GEREJA",
     },
     {
@@ -31,7 +32,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
       mapUrl: "https://maps.app.goo.gl/Ab99Kd87YoxzMK8z9",
       icon: <Coffee className="h-6 w-6" />,
       color: "bg-amber-900 text-white",
-      borderColor: "border-amber-600",
+      borderColor: "border-[#dbbeca]",
       fieldKey: "TEA PAI",
     },
     {
@@ -43,7 +44,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
       mapUrl: "https://maps.app.goo.gl/Ab99Kd87YoxzMK8z9",
       icon: <Utensils className="h-6 w-6" />,
       color: "bg-amber-900 text-white",
-      borderColor: "border-amber-600",
+      borderColor: "border-[#dbbeca]",
       fieldKey: "SOIREE",
     },
     {
@@ -55,7 +56,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
       mapUrl: "https://maps.app.goo.gl/Ab99Kd87YoxzMK8z9",
       icon: <Music className="h-6 w-6" />,
       color: "bg-amber-900 text-white",
-      borderColor: "border-amber-600",
+      borderColor: "border[#dbbeca]",
       fieldKey: "AFTER PARTY",
     },
   ];
@@ -90,20 +91,19 @@ export default function TimeLine({ guest }: { guest: Guest }) {
 
   return (
     <div className=" bg-[#422922] pb-8 relative  w-full flex items-start justify-center">
-      <Image
+      {/* <Image
           alt="bg"
           src="/frame_page_2_top.png"
           width={1080}
           height={1920}
           className="absolute object-contain w-full h-[100svh] z-0 border"
-        />
+        /> */}
       <motion.div
         className="max-w-[20rem] mx-auto  pt-[17%]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        
         <div className="text-center mb-12">
           <motion.div
             initial={{ scale: 0 }}
@@ -118,11 +118,13 @@ export default function TimeLine({ guest }: { guest: Guest }) {
           >
             <Image src="/bow_logogram.svg" alt="bow" width={100} height={100} />
           </motion.div>
-          <h1 className="text-3xl font-serif font-bold text-white mb-2">
-            Our Special Day
+          <h1
+            className={`${headingFont.className} text-4xl text-[#dcbfc9] font-serif  mb-8`}
+          >
+            Chapter One of Forever
           </h1>
-          <p className="text-[#dcbfc9]">
-            We&apos;re excited to have you join our celebration!
+          <p className="text-[#fcfcfc]">
+            We&apos;d love for you to be part of the story
           </p>
 
           {/* Display event badges */}
@@ -208,7 +210,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
                     <div className="mb-3">
                       <div className="flex items-center mb-2">
                         <MapPin className="h-4 w-4 text-amber-300 mr-2" />
-                        <h3 className="font-medium text-white">
+                        <h3 className="font-bold text-[#fcfcfc]">
                           {event.location}
                         </h3>
                       </div>

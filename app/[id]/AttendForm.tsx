@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { updateGuest } from "../guests/actions";
+import { headingFont } from "../fonts";
 
 export default function AttendForm({ guest }) {
   const [willAttend, setWillAttend] = useState(
@@ -82,7 +82,7 @@ export default function AttendForm({ guest }) {
   };
 
   return (
-    <div className="relative w-full flex items-start justify-center pb-[20rem]">
+    <div className="relative w-full flex items-start justify-center pb-[10rem]">
       <div className="relative w-full max-w-[23rem] p-8 bg-stone-800/30  rounded-2xl shadow-lg text-rose-200 overflow-hidden">
         {/* Decorative corner elements */}
         {/* <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-rose-200"></div>
@@ -98,22 +98,20 @@ export default function AttendForm({ guest }) {
         ) : (
           <div className="relative z-10 space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-serif text-rose-200">
+              <h2
+                className={`text-4xl font-serif text-rose-200 ${headingFont.className}`}
+              >
                 Confirmation
               </h2>
-              <div className="flex items-center justify-center mt-2">
-                <div className="h-px bg-rose-200 w-12"></div>
-                <div className="mx-3 text-xl">&</div>
-                <div className="h-px bg-rose-200 w-12"></div>
-              </div>
+
               <p className="mt-2 italic text-sm">
-                We look forward to celebrating with you
+                Let&apos;s kick off forever--with dancing, laugnter, and love.
               </p>
             </div>
 
             <div className="space-y-1">
               <label className="block text-rose-200 text-sm font-serif">
-                Nama
+                Name
               </label>
               <input
                 value={guestData.fields.NAMA}
@@ -135,7 +133,7 @@ export default function AttendForm({ guest }) {
 
             <div className="space-y-1">
               <label className="block text-rose-200 text-sm font-serif">
-                Jumlah Orang
+                Attendance number
               </label>
               <input
                 type="number"
@@ -163,7 +161,7 @@ export default function AttendForm({ guest }) {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300"
+                className={`${headingFont.className}  w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300`}
               >
                 {loading ? "Updating..." : "Confirm Attendance"}
               </button>
@@ -173,24 +171,22 @@ export default function AttendForm({ guest }) {
                   handleNotAttend();
                 }}
                 disabled={loading}
-                className="w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300"
+                className={`${headingFont.className} w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300`}
               >
                 {loading ? "Updating..." : "Sorry Couldn't make it"}
               </button>
             </>
-
-           
           </div>
         )}
       </div>
 
-      <Image
+      {/* <Image
         alt="bg"
         src="/frame_page_2_bottom.png"
         width={1080}
         height={1920}
         className="absolute object-contain w-full h-[100svh] z-0 border bottom-0"
-      />
+      /> */}
     </div>
   );
 }
