@@ -99,7 +99,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
           className="absolute object-contain w-full h-[100svh] z-0 border"
         /> */}
       <motion.div
-        className="max-w-[20rem] mx-auto  pt-[17%]"
+        className="max-w-[20rem] mx-auto  pt-[3%]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -114,7 +114,7 @@ export default function TimeLine({ guest }: { guest: Guest }) {
               damping: 20,
               delay: 0.2,
             }}
-            className="inline-block mb-4"
+            className="inline-block mb-12"
           >
             <Image src="/bow_logogram.svg" alt="bow" width={100} height={100} />
           </motion.div>
