@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
     "airtable": "^0.12.2",
     "axios": "^1.9.0",
     "framer-motion": "^12.10.0",

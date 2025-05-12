@@ -250,6 +250,7 @@ export default function GuestsPage() {
     }
   };
 
+
   return (
     <div className="flex flex-col w-full">
       <h1 className="text-3xl font-bold  text-center flex items-center w-full justify-center p-4"><span>Guest Manager</span></h1>
