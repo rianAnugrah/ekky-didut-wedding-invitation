@@ -6,9 +6,12 @@ import { headingFont } from "../fonts";
 
 export default function AttendForm({ guest }) {
   const [willAttend, setWillAttend] = useState(
-    guest?.fields["WILL ATTEND"] || 1
+    guest?.fields["WILL ATTEND"] || 0
   );
   const [loading, setLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -39,6 +42,7 @@ export default function AttendForm({ guest }) {
   const handleSubmit = async () => {
     //e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       await updateGuest(guest.id, {
@@ -51,10 +55,13 @@ export default function AttendForm({ guest }) {
         SOIREE: guestData.fields["SOIREE"],
         "AFTER PARTY": guestData.fields["AFTER PARTY"],
       });
+      setSuccess(true);
     } catch (error) {
-      console.log(error);
+      setError("Failed to update attendance. Please try again.");
+      console.error(error);
     } finally {
       setLoading(false);
+      setShowConfirmation(false);
     }
   };
 
@@ -62,6 +69,7 @@ export default function AttendForm({ guest }) {
   const handleNotAttend = async () => {
     //e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       await updateGuest(guest.id, {
@@ -74,10 +82,13 @@ export default function AttendForm({ guest }) {
         SOIREE: guestData.fields["SOIREE"],
         "AFTER PARTY": guestData.fields["AFTER PARTY"],
       });
+      setSuccess(true);
     } catch (error) {
-      console.log(error);
+      setError("Failed to update attendance. Please try again.");
+      console.error(error);
     } finally {
       setLoading(false);
+      setShowConfirmation(false);
     }
   };
 
@@ -89,12 +100,19 @@ export default function AttendForm({ guest }) {
         <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-rose-200"></div>
         <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-rose-200"></div>
         <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-rose-200"></div> */}
-        {guestData.fields["WILL ATTEND"] === -1 ? (
+        {success ? (
           <div className="w-full text-center">
-            You choose to did not coming{" "}
+            <h2 className={`text-2xl font-serif text-rose-200 ${headingFont.className}`}>
+              Thank You!
+            </h2>
+            <p className="mt-2">Your attendance has been confirmed.</p>
+          </div>
+        ) : guestData.fields["WILL ATTEND"] === -1 ? (
+          <div className="w-full text-center">
+            You have chosen not to attend.
           </div>
         ) : guestData.fields["WILL ATTEND"] > 0 ? (
-          <div className="w-full text-center">Thanks For confirm!</div>
+          <div className="w-full text-center">Thanks for confirming!</div>
         ) : (
           <div className="relative z-10 space-y-6">
             <div className="text-center mb-8">
@@ -147,31 +165,49 @@ export default function AttendForm({ guest }) {
               <label className="block text-rose-200 text-sm font-serif">
                 Will Attend
               </label>
-              <input
-                type="number"
-                min={0}
-                max={guestData.fields["JUMLAH ORANG"] || 1}
-                value={willAttend}
-                onChange={(e) => setWillAttend(Number(e.target.value))}
-                className="w-full p-2 bg-transparent border border-rose-200 rounded text-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-200/30"
-              />
+              {willAttend === 0 && (
+                <p className="text-rose-200/70 text-xs italic mb-2">
+                  Please select how many will attend
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {Array.from({ length: (guestData.fields["JUMLAH ORANG"] || 1) }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    type="button"
+                    onClick={() => setWillAttend(i + 1)}
+                    className={`${headingFont.className} px-4 py-2 border border-rose-200 rounded text-rose-200 transition-colors duration-300 ${
+                      willAttend === i + 1 ? "bg-rose-200 text-stone-800" : "bg-transparent hover:bg-rose-200/10"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {error && (
+              <div className="text-red-400 text-sm text-center">
+                {error}
+              </div>
+            )}
 
             <>
               <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className={`${headingFont.className}  w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300`}
+                onClick={() => setShowConfirmation(true)}
+                disabled={loading || willAttend === 0}
+                className={`${headingFont.className} w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {loading ? "Updating..." : "Confirm Attendance"}
               </button>
 
               <button
                 onClick={() => {
-                  handleNotAttend();
+                  setWillAttend(0);
+                  setShowConfirmation(true);
                 }}
                 disabled={loading}
-                className={`${headingFont.className} w-full mt-6 bg-rose-200 hover:bg-rose-300 text-stone-800 font-serif py-3 px-4 rounded transition-colors duration-300`}
+                className={`${headingFont.className} w-full mt-6 border border-rose-200 text-rose-200 hover:bg-rose-200/10 font-serif py-3 px-4 rounded transition-colors duration-300`}
               >
                 {loading ? "Updating..." : "Sorry Couldn't make it"}
               </button>
@@ -187,6 +223,35 @@ export default function AttendForm({ guest }) {
         height={1920}
         className="absolute object-contain w-full h-[100svh] z-0 border bottom-0"
       /> */}
+
+      {/* Confirmation Dialog */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-stone-800/90 p-6 rounded-lg max-w-sm w-full">
+            <h3 className="text-xl font-serif text-rose-200 mb-4">
+              {willAttend > 0 ? "Confirm Attendance" : "Confirm You Can't Make It"}
+            </h3>
+            <p className="text-rose-200 mb-6">
+              Are you sure you want to proceed?
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="flex-1 py-2 border border-rose-200 text-rose-200 rounded hover:bg-rose-200/10"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={willAttend > 0 ? handleSubmit : handleNotAttend}
+                disabled={loading}
+                className="flex-1 py-2 bg-rose-200 text-stone-800 rounded hover:bg-rose-300"
+              >
+                {loading ? "Processing..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
