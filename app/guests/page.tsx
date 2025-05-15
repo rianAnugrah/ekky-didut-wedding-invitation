@@ -222,8 +222,6 @@ export default function GuestsPage() {
     resetForm();
   };
 
-
-
   useEffect(() => {
     console.log("Guest data:", guests);
   }, [guests]);
@@ -430,15 +428,13 @@ export default function GuestsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by name"
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border bg-white text-black  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Attendance Filter */}
-            <div>
-              <label className="hidden text-sm font-medium  mb-1">
-                Attendance
-              </label>
+            <div className="flex flex-col">
+              <label className="text-sm font-medium  mb-1">Will Attend</label>
               <select
                 value={filterAttendance ?? ""}
                 onChange={(e) =>
@@ -446,12 +442,13 @@ export default function GuestsPage() {
                     e.target.value === "" ? null : Number(e.target.value)
                   )
                 }
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 bg-white text-black py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All</option>
-                <option value="1">Will Attend</option>
-                <option value="0">Pending</option>
-                <option value="-1">Will Not Attend</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="0">Not Confirmed</option>
+                <option value="-1">Can&apos;t Make it</option>
               </select>
             </div>
 
@@ -469,7 +466,7 @@ export default function GuestsPage() {
                       | "jumlah-desc"
                   )
                 }
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border bg-white text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -513,19 +510,25 @@ export default function GuestsPage() {
                               </p>
                             )}
                           </div>
-                          
+
                           {/* Attendance Info */}
                           <div className="col-span-2">
                             <p className="text-gray-600 text-xs">
                               Limit: {guest["JUMLAH ORANG"] || 1}
                             </p>
                             {guest["WILL ATTEND"] && (
-                              <span className={`text-xs px-0 py-0.5 rounded-full text-black`}>
-                                {guest["WILL ATTEND"] >= 1 && `Will attend ${guest["WILL ATTEND"]} / ${guest["JUMLAH ORANG"]}`}
+                              <span
+                                className={`text-xs py-0.5 rounded-full text-black px-4 ${guest["WILL ATTEND"] === -1 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}
+                              >
+                                {guest["WILL ATTEND"] >= 1 &&
+                                  `Will attend ${guest["WILL ATTEND"]} / ${guest["JUMLAH ORANG"]}`}
+
+                                {guest["WILL ATTEND"] === -1 &&
+                                  `Cant make it`}
                               </span>
                             )}
                           </div>
-                          
+
                           {/* Event Tags */}
                           <div className="col-span-4 flex flex-wrap gap-1">
                             {guest.GEREJA && (
@@ -549,7 +552,7 @@ export default function GuestsPage() {
                               </span>
                             )}
                           </div>
-                          
+
                           {/* Action Buttons */}
                           <div className="col-span-3 flex gap-1 justify-end">
                             <WhatsAppButton
@@ -563,7 +566,7 @@ export default function GuestsPage() {
                             >
                               <ExternalLink className="h-4 w-4" />
                             </a>
-                            {guest["WILL ATTEND"] >= 1 && (
+                            {guest["WILL ATTEND"] < 1 && (
                               <>
                                 <button
                                   onClick={() => handleEdit(guest)}

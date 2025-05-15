@@ -1,5 +1,5 @@
-import { MessageCircle } from 'lucide-react';
-import React from 'react';
+import { MessageCircle } from "lucide-react";
+import React from "react";
 
 interface WhatsAppButtonProps {
   phoneNumber?: string; // Boleh kosong, pakai wa.me tanpa nomor
@@ -7,26 +7,29 @@ interface WhatsAppButtonProps {
 }
 
 function formatPhoneNumber(input: string): string {
-  if (!input) return '';
-  
-  const cleaned = input.replace(/[^0-9]/g, '');
+  if (!input) return "";
 
-  if (cleaned.startsWith('0')) {
-    return '62' + cleaned.slice(1);
+  const cleaned = input.replace(/[^0-9]/g, "");
+
+  if (cleaned.startsWith("0")) {
+    return "62" + cleaned.slice(1);
   }
 
-  if (cleaned.startsWith('62')) {
+  if (cleaned.startsWith("62")) {
     return cleaned;
   }
 
-  if (cleaned.startsWith('8')) {
-    return '62' + cleaned;
+  if (cleaned.startsWith("8")) {
+    return "62" + cleaned;
   }
 
   return cleaned;
 }
 
-const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ phoneNumber, link }) => {
+const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
+  phoneNumber,
+  link,
+}) => {
   const formattedNumber = phoneNumber ? formatPhoneNumber(phoneNumber) : null;
 
   const message = `Hi
@@ -58,7 +61,7 @@ Ekky & Didut
       href={waUrl}
       target="_blank"
       rel="noopener noreferrer"
-     className='flex bg-green-200 text-green-600 px-4 gap-2 rounded items-center'
+      className="flex bg-green-200 text-green-600 px-4 gap-2 rounded items-center"
     >
       <MessageCircle /> Invite
     </a>
