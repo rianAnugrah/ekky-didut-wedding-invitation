@@ -222,35 +222,7 @@ export default function GuestsPage() {
     resetForm();
   };
 
-  // Get attendance status text
-  const getAttendanceStatus = (willAttend: number | undefined) => {
-    if (willAttend === undefined) return "Unknown";
-    switch (willAttend) {
-      case 1:
-        return "Will Attend";
-      case 0:
-        return "Pending";
-      case -1:
-        return "Will Not Attend";
-      default:
-        return "Unknown";
-    }
-  };
 
-  // Get attendance status color
-  const getAttendanceStatusColor = (willAttend: number | undefined) => {
-    if (willAttend === undefined) return "bg-gray-100 text-gray-800";
-    switch (willAttend) {
-      case 1:
-        return "bg-green-100 text-green-800";
-      case 0:
-        return "bg-yellow-100 text-yellow-800";
-      case -1:
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
 
   useEffect(() => {
     console.log("Guest data:", guests);
