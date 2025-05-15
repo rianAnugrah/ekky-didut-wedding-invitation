@@ -60,7 +60,7 @@ Ekky & Didut
       rel="noopener noreferrer"
      className='flex bg-green-200 text-green-600 px-4 gap-2 rounded items-center'
     >
-      <MessageCircle /> Send
+      <MessageCircle /> Invite
     </a>
   );
 };

@@ -3,7 +3,14 @@
 import type React from "react";
 
 import { useState, useEffect } from "react";
-import { Loader2, Trash2, PenSquare, Plus, X, ExternalLink } from "lucide-react";
+import {
+  Loader2,
+  Trash2,
+  PenSquare,
+  Plus,
+  X,
+  ExternalLink,
+} from "lucide-react";
 import {
   fetchGuests,
   createGuest,
@@ -68,8 +75,7 @@ export default function GuestsPage() {
         searchTerm.toLowerCase()
       );
       const attendanceMatches =
-        filterAttendance === null ||
-        guest["WILL ATTEND"] === filterAttendance;
+        filterAttendance === null || guest["WILL ATTEND"] === filterAttendance;
       return nameMatches && attendanceMatches;
     })
     .sort((a, b) => {
@@ -79,13 +85,9 @@ export default function GuestsPage() {
         case "name-desc":
           return b.NAMA.localeCompare(a.NAMA);
         case "jumlah-asc":
-          return (
-            (a["JUMLAH ORANG"] || 0) - (b["JUMLAH ORANG"] || 0)
-          );
+          return (a["JUMLAH ORANG"] || 0) - (b["JUMLAH ORANG"] || 0);
         case "jumlah-desc":
-          return (
-            (b["JUMLAH ORANG"] || 0) - (a["JUMLAH ORANG"] || 0)
-          );
+          return (b["JUMLAH ORANG"] || 0) - (a["JUMLAH ORANG"] || 0);
         default:
           return 0;
       }
@@ -125,19 +127,16 @@ export default function GuestsPage() {
     try {
       if (editingGuest) {
         // Update existing guest
-        const updatedGuest = await updateGuest(
-          editingGuest.id,
-          {
-            NAMA: nama,
-            "PHONE NUMBER": phoneNumber,
-            "JUMLAH ORANG": jumlahOrang,
-            "WILL ATTEND": willAttend,
-            GEREJA: gereja,
-            "TEA PAI": teaPai,
-            SOIREE: soiree,
-            "AFTER PARTY": afterParty,
-          }
-        );
+        const updatedGuest = await updateGuest(editingGuest.id, {
+          NAMA: nama,
+          "PHONE NUMBER": phoneNumber,
+          "JUMLAH ORANG": jumlahOrang,
+          "WILL ATTEND": willAttend,
+          GEREJA: gereja,
+          "TEA PAI": teaPai,
+          SOIREE: soiree,
+          "AFTER PARTY": afterParty,
+        });
 
         setGuests(
           guests.map((guest) =>
@@ -259,7 +258,9 @@ export default function GuestsPage() {
 
   return (
     <div className="flex flex-col w-full">
-      <h1 className="text-3xl font-bold  text-center flex items-center w-full justify-center p-4"><span>Guest Manager</span></h1>
+      <h1 className="text-3xl font-bold  text-center flex items-center w-full justify-center p-4">
+        <span>Guest Manager</span>
+      </h1>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
         {/* Guest Form */}
         <div className="bg-white rounded-lg shadow-md  overflow-hidden text-black">
@@ -275,10 +276,7 @@ export default function GuestsPage() {
           </div>
           <form onSubmit={handleSubmit} className="p-6">
             <div className="mb-4">
-              <label
-                htmlFor="nama"
-                className="block text-sm font-medium  mb-1"
-              >
+              <label htmlFor="nama" className="block text-sm font-medium  mb-1">
                 Nama
               </label>
               <input
@@ -357,10 +355,7 @@ export default function GuestsPage() {
                   onChange={(e) => setGereja(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label
-                  htmlFor="gereja"
-                  className="ml-2 block text-sm "
-                >
+                <label htmlFor="gereja" className="ml-2 block text-sm ">
                   Gereja
                 </label>
               </div>
@@ -373,10 +368,7 @@ export default function GuestsPage() {
                   onChange={(e) => setTeaPai(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label
-                  htmlFor="teaPai"
-                  className="ml-2 block text-sm "
-                >
+                <label htmlFor="teaPai" className="ml-2 block text-sm ">
                   Tea Pai
                 </label>
               </div>
@@ -389,10 +381,7 @@ export default function GuestsPage() {
                   onChange={(e) => setSoiree(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label
-                  htmlFor="soiree"
-                  className="ml-2 block text-sm "
-                >
+                <label htmlFor="soiree" className="ml-2 block text-sm ">
                   Soiree
                 </label>
               </div>
@@ -405,10 +394,7 @@ export default function GuestsPage() {
                   onChange={(e) => setAfterParty(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label
-                  htmlFor="afterParty"
-                  className="ml-2 block text-sm "
-                >
+                <label htmlFor="afterParty" className="ml-2 block text-sm ">
                   After Party
                 </label>
               </div>
@@ -466,9 +452,7 @@ export default function GuestsPage() {
           <div className="mb-6 flex flex-wrap gap-4 items-end bg-transparent ">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium  mb-1">
-                Search
-              </label>
+              <label className="block text-sm font-medium  mb-1">Search</label>
               <input
                 type="text"
                 value={searchTerm}
@@ -501,9 +485,7 @@ export default function GuestsPage() {
 
             {/* Sort */}
             <div>
-              <label className="block text-sm font-medium  mb-1">
-                Sort By
-              </label>
+              <label className="block text-sm font-medium  mb-1">Sort By</label>
               <select
                 value={sortOption}
                 onChange={(e) =>
@@ -527,7 +509,6 @@ export default function GuestsPage() {
 
           {/* Guests List */}
           <div>
-
             {loading ? (
               <div className="flex justify-center items-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -539,84 +520,94 @@ export default function GuestsPage() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-0 max-h-[calc(100svh_-_16rem)] overflow-auto rounded-lg divide-y divide-amber-800 ">
+              <div className="space-y-0 max-h-[calc(100svh_-_16rem)] overflow-auto rounded-lg shadow-md">
                 {filteredGuests.map((guest) => (
                   <div
                     key={guest.id}
-                    className="bg-white  shadow-md overflow-hidden"
+                    className="bg-white border-b border-gray-200 last:border-b-0"
                   >
-                    <div className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="grid grid-cols-4 w-full">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-gray-900">
+                    <div className="p-3">
+                      <div className="flex items-center">
+                        {/* Guest Info - Fixed width columns */}
+                        <div className="grid grid-cols-12 gap-4 w-full">
+                          {/* Name and Phone */}
+                          <div className="col-span-3 flex flex-col">
+                            <h3 className="font-medium text-gray-900 truncate">
                               {guest.NAMA}
                             </h3>
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAttendanceStatusColor(
-                                guest["WILL ATTEND"]
-                              )}`}
-                            >
-                              {getAttendanceStatus(guest["WILL ATTEND"])}
-                            </span>
+                            {guest["PHONE NUMBER"] && (
+                              <p className="text-gray-600 text-xs">
+                                {guest["PHONE NUMBER"]}
+                              </p>
+                            )}
                           </div>
-
-                          {guest["PHONE NUMBER"] && (
-                            <p className="mt-1 text-gray-600 text-sm">
-                              {guest["PHONE NUMBER"]}
+                          
+                          {/* Attendance Info */}
+                          <div className="col-span-2">
+                            <p className="text-gray-600 text-xs">
+                              Limit: {guest["JUMLAH ORANG"] || 1}
                             </p>
-                          )}
-                          <p className="mt-1 text-gray-600 text-sm">
-                            Limit Tamu: {guest["JUMLAH ORANG"] || 1}
-                          </p>
-
-                          <div className="mt-2 flex flex-wrap gap-2">
+                            {guest["WILL ATTEND"] && (
+                              <span className={`text-xs px-0 py-0.5 rounded-full text-black`}>
+                                {guest["WILL ATTEND"] >= 1 && `Will attend ${guest["WILL ATTEND"]} / ${guest["JUMLAH ORANG"]}`}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Event Tags */}
+                          <div className="col-span-4 flex flex-wrap gap-1">
                             {guest.GEREJA && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Gereja
                               </span>
                             )}
                             {guest["TEA PAI"] && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
                                 Tea Pai
                               </span>
                             )}
                             {guest.SOIREE && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                 Soiree
                               </span>
                             )}
                             {guest["AFTER PARTY"] && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                 After Party
                               </span>
                             )}
                           </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <WhatsAppButton
-                            link={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
-                            phoneNumber={guest["PHONE NUMBER"]}
-                          />
-                          <a
-                            href={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
-                            target="_blank"
-                            className="flex items-center p-4 gap-2 rounded bg-blue-400"
-                          >
-                            <ExternalLink /> Preview Link{" "}
-                          </a>
-                          <button
-                            onClick={() => handleEdit(guest)}
-                             className="flex items-center p-4 gap-2 rounded bg-gray-400"
-                          >
-                            <PenSquare className="h-4 w-4" /> Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(guest.id)}
-                             className="flex items-center p-4 gap-2 rounded bg-red-400"
-                          >
-                            <Trash2 className="h-4 w-4" /> Remove
-                          </button>
+                          
+                          {/* Action Buttons */}
+                          <div className="col-span-3 flex gap-1 justify-end">
+                            <WhatsAppButton
+                              link={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
+                              phoneNumber={guest["PHONE NUMBER"]}
+                            />
+                            <a
+                              href={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
+                              target="_blank"
+                              className="flex items-center p-2 rounded bg-blue-400 text-white"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                            {guest["WILL ATTEND"] >= 1 && (
+                              <>
+                                <button
+                                  onClick={() => handleEdit(guest)}
+                                  className="flex items-center p-2 rounded bg-gray-400 text-white"
+                                >
+                                  <PenSquare className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(guest.id)}
+                                  className="flex items-center p-2 rounded bg-red-400 text-white"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
