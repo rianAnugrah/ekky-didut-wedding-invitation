@@ -64,27 +64,27 @@ export default function GuestsPage() {
 
   const filteredGuests = guests
     .filter((guest) => {
-      const nameMatches = guest.NAMA.toLowerCase().includes(
+      const nameMatches = guest.fields.NAMA.toLowerCase().includes(
         searchTerm.toLowerCase()
       );
       const attendanceMatches =
         filterAttendance === null ||
-        guest["WILL ATTEND"] === filterAttendance;
+        guest.fields["WILL ATTEND"] === filterAttendance;
       return nameMatches && attendanceMatches;
     })
     .sort((a, b) => {
       switch (sortOption) {
         case "name-asc":
-          return a.NAMA.localeCompare(b.NAMA);
+          return a.fields.NAMA.localeCompare(b.fields.NAMA);
         case "name-desc":
-          return b.NAMA.localeCompare(a.NAMA);
+          return b.fields.NAMA.localeCompare(a.fields.NAMA);
         case "jumlah-asc":
           return (
-            (a["JUMLAH ORANG"] || 0) - (b["JUMLAH ORANG"] || 0)
+            (a.fields["JUMLAH ORANG"] || 0) - (b.fields["JUMLAH ORANG"] || 0)
           );
         case "jumlah-desc":
           return (
-            (b["JUMLAH ORANG"] || 0) - (a["JUMLAH ORANG"] || 0)
+            (b.fields["JUMLAH ORANG"] || 0) - (a.fields["JUMLAH ORANG"] || 0)
           );
         default:
           return 0;
@@ -125,19 +125,16 @@ export default function GuestsPage() {
     try {
       if (editingGuest) {
         // Update existing guest
-        const updatedGuest = await updateGuest(
-          editingGuest.id,
-          {
-            NAMA: nama,
-            "PHONE NUMBER": phoneNumber,
-            "JUMLAH ORANG": jumlahOrang,
-            "WILL ATTEND": willAttend,
-            GEREJA: gereja,
-            "TEA PAI": teaPai,
-            SOIREE: soiree,
-            "AFTER PARTY": afterParty,
-          }
-        );
+        const updatedGuest = await updateGuest(editingGuest.id, {
+          NAMA: nama,
+          "PHONE NUMBER": phoneNumber,
+          "JUMLAH ORANG": jumlahOrang,
+          "WILL ATTEND": willAttend,
+          GEREJA: gereja,
+          "TEA PAI": teaPai,
+          SOIREE: soiree,
+          "AFTER PARTY": afterParty,
+        });
 
         setGuests(
           guests.map((guest) =>
@@ -207,14 +204,14 @@ export default function GuestsPage() {
   // Set up guest for editing
   const handleEdit = (guest: Guest) => {
     setEditingGuest(guest);
-    setNama(guest.NAMA);
-    setPhoneNumber(guest["PHONE NUMBER"] || "");
-    setJumlahOrang(guest["JUMLAH ORANG"] || 1);
-    setWillAttend(guest["WILL ATTEND"] || 0);
-    setGereja(guest.GEREJA || false);
-    setTeaPai(guest["TEA PAI"] || false);
-    setSoiree(guest.SOIREE || false);
-    setAfterParty(guest["AFTER PARTY"] || false);
+    setNama(guest.fields.NAMA);
+    setPhoneNumber(guest.fields["PHONE NUMBER"] || "");
+    setJumlahOrang(guest.fields["JUMLAH ORANG"] || 1);
+    setWillAttend(guest.fields["WILL ATTEND"] || 0);
+    setGereja(guest.fields.GEREJA || false);
+    setTeaPai(guest.fields["TEA PAI"] || false);
+    setSoiree(guest.fields.SOIREE || false);
+    setAfterParty(guest.fields["AFTER PARTY"] || false);
   };
 
   // Cancel editing
@@ -254,9 +251,13 @@ export default function GuestsPage() {
   };
 
   useEffect(() => {
-    console.log("Guest data:", guests);
+    console.log("Guest data:", guests.map(guest => ({
+      id: guest.id,
+      createdTime: guest.createdTime,
+      ...guest.fields
+    })));
   }, [guests]);
-
+  
   return (
     <div className="flex flex-col w-full">
       <h1 className="text-3xl font-bold  text-center flex items-center w-full justify-center p-4"><span>Guest Manager</span></h1>
@@ -550,43 +551,43 @@ export default function GuestsPage() {
                         <div className="grid grid-cols-4 w-full">
                           <div className="flex items-center gap-2">
                             <h3 className="font-medium text-gray-900">
-                              {guest.NAMA}
+                              {guest.fields.NAMA}
                             </h3>
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAttendanceStatusColor(
-                                guest["WILL ATTEND"]
+                                guest.fields["WILL ATTEND"]
                               )}`}
                             >
-                              {getAttendanceStatus(guest["WILL ATTEND"])}
+                              {getAttendanceStatus(guest.fields["WILL ATTEND"])}
                             </span>
                           </div>
 
-                          {guest["PHONE NUMBER"] && (
+                          {guest.fields["PHONE NUMBER"] && (
                             <p className="mt-1 text-gray-600 text-sm">
-                              {guest["PHONE NUMBER"]}
+                              {guest.fields["PHONE NUMBER"]}
                             </p>
                           )}
                           <p className="mt-1 text-gray-600 text-sm">
-                            Limit Tamu: {guest["JUMLAH ORANG"] || 1}
+                            Limit Tamu: {guest.fields["JUMLAH ORANG"] || 1}
                           </p>
 
                           <div className="mt-2 flex flex-wrap gap-2">
-                            {guest.GEREJA && (
+                            {guest.fields.GEREJA && (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Gereja
                               </span>
                             )}
-                            {guest["TEA PAI"] && (
+                            {guest.fields["TEA PAI"] && (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
                                 Tea Pai
                               </span>
                             )}
-                            {guest.SOIREE && (
+                            {guest.fields.SOIREE && (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                 Soiree
                               </span>
                             )}
-                            {guest["AFTER PARTY"] && (
+                            {guest.fields["AFTER PARTY"] && (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                 After Party
                               </span>
@@ -596,7 +597,7 @@ export default function GuestsPage() {
                         <div className="flex gap-2">
                           <WhatsAppButton
                             link={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}
-                            phoneNumber={guest["PHONE NUMBER"]}
+                            phoneNumber={guest.fields["PHONE NUMBER"]}
                           />
                           <a
                             href={`https://ekkyxdidut.pixinia.web.id/${guest.id}`}

@@ -61,9 +61,9 @@ export default function TimeLine({ guest }: { guest: Guest }) {
     },
   ];
 
-  // Filter events based on guest.fields
+  // Filter events based on guest
   const filteredEvents = events.filter(
-    (event) => guest && guest.fields && guest.fields[event.fieldKey]
+    (event) => guest && guest[event.fieldKey]
   );
 
   const container = {
@@ -129,22 +129,22 @@ export default function TimeLine({ guest }: { guest: Guest }) {
 
           {/* Display event badges */}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {guest?.fields?.GEREJA && (
+            {guest?.GEREJA && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                 Holy Matrimony
               </span>
             )}
-            {guest?.fields?.["TEA PAI"] && (
+            {guest?.["TEA PAI"] && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                 Tea Pai
               </span>
             )}
-            {guest?.fields?.SOIREE && (
+            {guest?.SOIREE && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                 Soirée
               </span>
             )}
-            {guest?.fields?.["AFTER PARTY"] && (
+            {guest?.["AFTER PARTY"] && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                 After Party
               </span>

@@ -1,73 +1,74 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import axios from "axios";
+import { createClient } from '@supabase/supabase-js';
 
-// Update the interface to include the WILL ATTEND field
+// Update the interface for Supabase
 export interface Guest {
   id: string;
-  createdTime: string;
-  fields: {
-    NAMA: string;
-    "PHONE NUMBER"?: string;
-    "JUMLAH ORANG"?: number;
-    "WILL ATTEND"?: number;
-    GEREJA?: boolean;
-    "TEA PAI"?: boolean;
-    SOIREE?: boolean;
-    "AFTER PARTY"?: boolean;
-  };
+  NAMA: string;
+  "PHONE NUMBER"?: string;
+  "JUMLAH ORANG"?: number;
+  "WILL ATTEND"?: number;
+  GEREJA?: boolean;
+  "TEA PAI"?: boolean;
+  SOIREE?: boolean;
+  "AFTER PARTY"?: boolean;
+  createdTime?: string;
 }
 
-// Fetch all guests with pagination
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("Supabase URL or key is missing in environment variables");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Enhanced error handler for Supabase operations
+function handleSupabaseError(operation: string, error: any): never {
+  let errorMessage = `Error during ${operation}: `;
+  
+  if (error.code) {
+    errorMessage += `Code: ${error.code}`;
+  }
+  
+  if (error.message) {
+    errorMessage += ` Message: ${error.message}`;
+  }
+  
+  if (error.details) {
+    errorMessage += ` Details: ${error.details}`;
+  }
+  
+  if (error.hint) {
+    errorMessage += ` Hint: ${error.hint}`;
+  }
+  
+  console.error(errorMessage, error);
+  throw new Error(errorMessage);
+}
+
+// Fetch all guests
 export async function fetchGuests() {
-  const apiKey = process.env.AIRTABLE_API_KEY
-  const baseId = process.env.AIRTABLE_BASE_ID
-
-  if (!apiKey || !baseId) {
-    throw new Error("Airtable API key or base ID is missing")
-  }
-
-  let allRecords: any[] = []
-  let offset: string | undefined = undefined
-
   try {
-    do {
-      const url = `https://api.airtable.com/v0/${baseId}/guest?pageSize=100${offset ? `&offset=${offset}` : ""}`
+    const { data, error } = await supabase
+      .from('guests')
+      .select('*');
 
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      })
+    if (error) {
+      handleSupabaseError('fetching guests', error);
+    }
 
-      const records = response.data.records
-      allRecords = allRecords.concat(records)
-      offset = response.data.offset
-    } while (offset)
-
-    const supabaseGuests = allRecords.map((guest) => ({
-      id: guest.id,
-      nama: guest.fields.NAMA,
-      phone_number: guest.fields["PHONE NUMBER"] ?? null,
-      jumlah_orang: guest.fields["JUMLAH ORANG"] ?? null,
-      will_attend: guest.fields["WILL ATTEND"] ?? null,
-      gereja: guest.fields.GEREJA ?? null,
-      tea_pai: guest.fields["TEA PAI"] ?? null,
-      soiree: guest.fields.SOIREE ?? null,
-      after_party: guest.fields["AFTER PARTY"] ?? null,
-      fields: guest.fields,
-    }))
-
-    console.log(`✅ Fetched ${supabaseGuests.length} guests`)
-    return allRecords as Guest[]
+    console.log(`✅ Fetched ${data.length} guests`);
+    return data as Guest[];
   } catch (error) {
-    console.error("Error fetching guests:", error)
-    throw error
+    console.error("Unexpected error fetching guests:", error);
+    throw new Error(`Failed to fetch guests: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 
 // Create a new guest
 export async function createGuest(
@@ -80,44 +81,35 @@ export async function createGuest(
   soiree: boolean,
   afterParty: boolean
 ) {
-  const apiKey = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
-
-  if (!apiKey || !baseId) {
-    throw new Error("Airtable API key or base ID is missing");
-  }
-
   try {
-    const response = await axios.post(
-      `https://api.airtable.com/v0/${baseId}/guest`,
-      {
-        records: [
-          {
-            fields: {
-              NAMA: nama,
-              "PHONE NUMBER": phoneNumber,
-              "JUMLAH ORANG": jumlahOrang,
-              "WILL ATTEND": willAttend,
-              GEREJA: gereja,
-              "TEA PAI": teaPai,
-              SOIREE: soiree,
-              "AFTER PARTY": afterParty,
-            },
-          },
-        ],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    if (!nama) {
+      throw new Error("Guest name is required");
+    }
 
-    return response.data.records[0] as Guest;
+    const { data, error } = await supabase
+      .from('guests')
+      .insert({
+        NAMA: nama,
+        "PHONE NUMBER": phoneNumber,
+        "JUMLAH ORANG": jumlahOrang,
+        "WILL ATTEND": willAttend,
+        GEREJA: gereja,
+        "TEA PAI": teaPai,
+        SOIREE: soiree,
+        "AFTER PARTY": afterParty,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      handleSupabaseError('creating guest', error);
+    }
+
+    console.log(`✅ Created guest: ${nama}`);
+    return data as Guest;
   } catch (error) {
     console.error("Error creating guest:", error);
-    throw error;
+    throw new Error(`Failed to create guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -135,59 +127,50 @@ export async function updateGuest(
     "AFTER PARTY"?: boolean;
   }
 ) {
-  const apiKey = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
-
-  if (!apiKey || !baseId) {
-    throw new Error("Airtable API key or base ID is missing");
-  }
-
   try {
-    const response = await axios.patch(
-      `https://api.airtable.com/v0/${baseId}/guest`,
-      {
-        records: [
-          {
-            id,
-            fields,
-          },
-        ],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    if (!id) {
+      throw new Error("Guest ID is required for updating");
+    }
 
-    return response.data.records[0] as Guest;
+    const { data, error } = await supabase
+      .from('guests')
+      .update(fields)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      handleSupabaseError('updating guest', error);
+    }
+
+    console.log(`✅ Updated guest with ID: ${id}`);
+    return data as Guest;
   } catch (error) {
     console.error("Error updating guest:", error);
-    throw error;
+    throw new Error(`Failed to update guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
 // Delete a guest
 export async function deleteGuest(id: string) {
-  const apiKey = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
-
-  if (!apiKey || !baseId) {
-    throw new Error("Airtable API key or base ID is missing");
-  }
-
   try {
-    await axios.delete(`https://api.airtable.com/v0/${baseId}/guest/${id}`, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-    });
+    if (!id) {
+      throw new Error("Guest ID is required for deletion");
+    }
 
-    return { success: true };
+    const { error } = await supabase
+      .from('guests')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      handleSupabaseError('deleting guest', error);
+    }
+
+    console.log(`✅ Deleted guest with ID: ${id}`);
+    return { success: true, message: "Guest deleted successfully" };
   } catch (error) {
     console.error("Error deleting guest:", error);
-    throw error;
+    throw new Error(`Failed to delete guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }

@@ -1,59 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { updateGuest } from "../guests/actions";
+import { updateGuest, type Guest } from "../guests/actions";
 import { headingFont } from "../fonts";
 
-export default function AttendForm({ guest }) {
+export default function AttendForm({ guest }: { guest: Guest }) {
   const [willAttend, setWillAttend] = useState(
-    guest?.fields["WILL ATTEND"] || 0
+    guest?.["WILL ATTEND"] || 0
   );
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setSuccess(false);
-
-  //   try {
-  //     // Simulating API call for demo
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-  //     setSuccess(true);
-  //   } catch (err) {
-  //     console.error(err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // Mock guest data for demonstration
+  // Mock guest data for demonstration with proper typing
   const guestData = guest || {
-    fields: {
-      NAMA: "Ekky & Didut",
-      "PHONE NUMBER": "+62 812 3456 7890",
-      "JUMLAH ORANG": 2,
-    },
-  };
+    NAMA: "Ekky & Didut",
+    "PHONE NUMBER": "+62 812 3456 7890",
+    "JUMLAH ORANG": 2,
+    "WILL ATTEND": 0,
+    GEREJA: false,
+    "TEA PAI": false,
+    SOIREE: false,
+    "AFTER PARTY": false,
+    id: "",
+  } as Guest;
 
-  // Handle form submission for creating or updating a guest
+  // Handle form submission for updating a guest
   const handleSubmit = async () => {
-    //e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
       await updateGuest(guest.id, {
-        NAMA: guestData.fields["NAMA"],
-        "PHONE NUMBER": guestData.fields["PHONE NUMBER"],
-        "JUMLAH ORANG": guestData.fields["JUMLAH ORANG"],
+        NAMA: guestData.NAMA,
+        "PHONE NUMBER": guestData["PHONE NUMBER"],
+        "JUMLAH ORANG": guestData["JUMLAH ORANG"],
         "WILL ATTEND": willAttend,
-        GEREJA: guestData.fields["GEREJA"],
-        "TEA PAI": guestData.fields["TEA PAI"],
-        SOIREE: guestData.fields["SOIREE"],
-        "AFTER PARTY": guestData.fields["AFTER PARTY"],
+        GEREJA: guestData.GEREJA,
+        "TEA PAI": guestData["TEA PAI"],
+        SOIREE: guestData.SOIREE,
+        "AFTER PARTY": guestData["AFTER PARTY"],
       });
       setSuccess(true);
     } catch (error) {
@@ -65,22 +52,21 @@ export default function AttendForm({ guest }) {
     }
   };
 
-  // Handle form submission for creating or updating a guest
+  // Handle form submission for declining attendance
   const handleNotAttend = async () => {
-    //e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
       await updateGuest(guest.id, {
-        NAMA: guestData.fields["NAMA"],
-        "PHONE NUMBER": guestData.fields["PHONE NUMBER"],
-        "JUMLAH ORANG": guestData.fields["JUMLAH ORANG"],
+        NAMA: guestData.NAMA,
+        "PHONE NUMBER": guestData["PHONE NUMBER"],
+        "JUMLAH ORANG": guestData["JUMLAH ORANG"],
         "WILL ATTEND": -1,
-        GEREJA: guestData.fields["GEREJA"],
-        "TEA PAI": guestData.fields["TEA PAI"],
-        SOIREE: guestData.fields["SOIREE"],
-        "AFTER PARTY": guestData.fields["AFTER PARTY"],
+        GEREJA: guestData.GEREJA,
+        "TEA PAI": guestData["TEA PAI"],
+        SOIREE: guestData.SOIREE,
+        "AFTER PARTY": guestData["AFTER PARTY"],
       });
       setSuccess(true);
     } catch (error) {
@@ -107,11 +93,11 @@ export default function AttendForm({ guest }) {
             </h2>
             <p className="mt-2">Your attendance has been confirmed.</p>
           </div>
-        ) : guestData.fields["WILL ATTEND"] === -1 ? (
+        ) : guestData["WILL ATTEND"] === -1 ? (
           <div className="w-full text-center">
             You have chosen not to attend.
           </div>
-        ) : guestData.fields["WILL ATTEND"] > 0 ? (
+        ) : guestData["WILL ATTEND"] > 0 ? (
           <div className="w-full text-center">Thanks for confirming!</div>
         ) : (
           <div className="relative z-10 space-y-6">
@@ -132,7 +118,7 @@ export default function AttendForm({ guest }) {
                 Name
               </label>
               <input
-                value={guestData.fields.NAMA}
+                value={guestData.NAMA}
                 disabled
                 className="w-full p-2 bg-transparent border border-rose-200 rounded text-rose-200"
               />
@@ -143,7 +129,7 @@ export default function AttendForm({ guest }) {
                 Phone Number
               </label>
               <input
-                value={guestData.fields["PHONE NUMBER"] || ""}
+                value={guestData["PHONE NUMBER"] || ""}
                 disabled
                 className="w-full p-2 bg-transparent border border-rose-200 rounded text-rose-200"
               />
@@ -155,7 +141,7 @@ export default function AttendForm({ guest }) {
               </label>
               <input
                 type="number"
-                value={guestData.fields["JUMLAH ORANG"] || 1}
+                value={guestData["JUMLAH ORANG"] || 1}
                 disabled
                 className="w-full p-2 bg-transparent border border-rose-200 rounded text-rose-200"
               />
@@ -171,7 +157,7 @@ export default function AttendForm({ guest }) {
                 </p>
               )}
               <div className="flex flex-wrap gap-2">
-                {Array.from({ length: (guestData.fields["JUMLAH ORANG"] || 1) }, (_, i) => (
+                {Array.from({ length: (guestData["JUMLAH ORANG"] || 1) }, (_, i) => (
                   <button
                     key={i + 1}
                     type="button"

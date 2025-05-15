@@ -7,8 +7,6 @@ interface WhatsAppButtonProps {
 }
 
 function formatPhoneNumber(input: string): string {
-  if (!input) return '';
-  
   const cleaned = input.replace(/[^0-9]/g, '');
 
   if (cleaned.startsWith('0')) {
